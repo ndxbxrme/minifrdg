@@ -8,11 +8,12 @@ const Minifrdg = (rootSelector) => {
   const callbacks = {};
   let hooks = {};
   const components = [];
+  const text = document.createElement('div');
   const $ = (selector, elem) => (elem || document).querySelector(selector);
   const $$ = (selector, elem) => Array.from((elem || document).querySelectorAll(selector));
-  const fill = (template, ctrl) => template.replace(/\{\{(.+?)\}\}/g, (all, str) => (new Function("with(this) {return " + str + "}")).call(ctrl));
+  const fill = (template, ctrl) => ((text.innerHTML = template) && text.innerText).replace(/\{\{(.+?)\}\}/g, (all, str) => (new Function("with(this) {return " + str + "}")).call(ctrl));
   const on = (eventName, cb) => (callbacks[eventName] = callbacks[eventName] || []).push(cb);
-  const fireCallbacks = async (eventName, data) => (await (callbacks[eventName] || []).reduce(((p,fn) => p.then((res) => fn(res, app))), Promise.resolve(data)));
+  const fireCallbacks = async (eventName, data) => (await (callbacks[eventName] || []).reduce(((p,fn) => p.then((res) => fn(res))), Promise.resolve(data)));
   const inflate = (name, data) => fill(template = templates[name] || '', (hooks[app.route] = data || controllers[name] && controllers[name](app) || {}));
   const refresh = () => {
     [rootSelector || 'app', ...components].forEach((component) => ($(component) || {}).innerHTML = inflate(component===(rootSelector || 'app') && app.route || component, hooks[app.route]));

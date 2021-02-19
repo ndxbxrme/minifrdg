@@ -16,7 +16,7 @@ const Minifrdg = () => {
   const inflate = (name, data) => fill(template = templates[name] || '', (hooks[route] = data || controllers[name] && controllers[name]() || {}));
   const refresh = () => {
     ['app', ...components].forEach((component) => ($(component) || {}).innerHTML = inflate(component==='app' && route || component, hooks[route]));
-    $$('a').forEach(anchor => anchor.href && (anchor.onclick = () => {window.app.goto(anchor.href.replace(document.location.origin,''));return false}));
+    $$('a').forEach(anchor => anchor.href && !anchor.target && (anchor.onclick = () => {window.app.goto(anchor.href.replace(document.location.origin,''));return false}));
   }
   const setState = () => {
     (fireCallbacks('cleanup') || (delete callbacks.cleanup)) && (hooks = {});

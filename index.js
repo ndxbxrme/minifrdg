@@ -11,7 +11,7 @@ const Minifrdg = (rootSelector) => {
   const $$ = (selector, elem) => Array.from((elem || document).querySelectorAll(selector));
   const fill = (template, ctrl) => {try{return template.replace(/\{\{(.+?)\}\}/g, (all, str) => (new Function("with(this) {return " + (/&.+?;/.test(str) && (text.innerHTML = str) && text.innerText || str) + "}")).call(ctrl))}catch(e){return ''}};
   const on = (eventName, cb) => (callbacks[eventName] = callbacks[eventName] || []).push(cb);
-  const fireCallbacks = async (eventName, data) => (await (callbacks[eventName] || []).reduce(((p,fn) => p.then((res) => fn(res))), Promise.resolve(data)));
+  const fireCallbacks = async (eventName, data) => (await (callbacks[eventName] || []).reduce(((p,fn) => p.then((res) => fn(res,app))), Promise.resolve(data)));
   const inflate = (name, data) => fill(template = templates[name] || '', (hooks[app.route] = data || controllers[name] && controllers[name](app) || {}));
   const refresh = () => {
     [rootSelector || 'app', ...components].forEach((component) => ($(component) || {}).innerHTML = inflate(component===(rootSelector || 'app') && app.route || component, hooks[app.route]));

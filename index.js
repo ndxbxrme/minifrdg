@@ -32,6 +32,6 @@ const Minifrdg = () => {
     }
     setState();
   };
-  return {route,params,base,useHash,templates,controllers,callbacks,hooks,components,$,$$,fill,on,fireCallbacks,inflate,setState,goto,refresh,start: () => setState()}
+  return {route,params,base,useHash,templates,controllers,callbacks,hooks,components,$,$$,fill,on,fireCallbacks,setState,goto,refresh,start: () => setState(),fns:{},vars:{}};
 }
 (typeof(module)!=='undefined') && (module.exports = Minifrdg) || (window.Minifrdg = Minifrdg)

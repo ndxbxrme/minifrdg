@@ -9,7 +9,7 @@ const Minifrdg = (rootSelector) => {
   const text = document.createElement('div');
   const $ = (selector, elem) => (elem || document).querySelector(selector);
   const $$ = (selector, elem) => Array.from((elem || document).querySelectorAll(selector));
-  const fill = (template, ctrl) => (/&.+?;/.test(template) && (text.innerHTML = template) && text.innerText || template).replace(/\{\{(.+?)\}\}/g, (all, str) => (new Function("with(this) {return " + str + "}")).call(ctrl));
+  const fill = (template, ctrl) => template.replace(/\{\{(.+?)\}\}/g, (all, str) => (new Function("with(this) {return " + (/&.+?;/.test(str) && (text.innerHTML = str) && text.innerText || str) + "}")).call(ctrl));
   const on = (eventName, cb) => (callbacks[eventName] = callbacks[eventName] || []).push(cb);
   const fireCallbacks = async (eventName, data) => (await (callbacks[eventName] || []).reduce(((p,fn) => p.then((res) => fn(res))), Promise.resolve(data)));
   const inflate = (name, data) => fill(template = templates[name] || '', (hooks[app.route] = data || controllers[name] && controllers[name](app) || {}));
@@ -36,4 +36,4 @@ const Minifrdg = (rootSelector) => {
   const app = {base,useHash,templates,controllers,callbacks,components,$,$$,fill,on,fireCallbacks,setState,goto,refresh,loadLocalTemplates,start: () => setState(),fns:{},vars:{}};
   return app;
 }
-(typeof(module)!=='undefined') && (module.exports = Minifrdg) || (window.Minifrdg = Minifrdg)
+(typeof(module)!=='undefined') && (module.exports = Minifrdg) || (window.Minifrdg = Minifrdg);

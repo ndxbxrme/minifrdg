@@ -16,8 +16,8 @@ const Minifrdg = (rootSelector) => {
   const refresh = () => {
     [rootSelector || 'app', ...components].forEach(component => ($(component) || {}).innerHTML = inflate(component===(rootSelector || 'app') && app.route || component, hooks[app.route]));
     $$('a').forEach(anchor => anchor.href && !anchor.target && (anchor.onclick = () => {app.goto(anchor.href.replace(document.location.origin,''));return false}));
-    [rootSelector || 'app', ...components].forEach(component => $$('*', component).forEach(elm => elm.getAttributeNames().forEach(name => /^on/.test(name) && (elm.txt = elm.getAttribute(name)) && elm.removeAttribute(name) || (elm[name] = (event, ctx) => new Function("with(this) {return " + elm.txt + "}").call(Object.assign(elm,{app:app,event:event}))) || (delete elm.txt))));
-  }
+    [rootSelector || 'app', ...components].forEach(component => ($(component) && $$('*', $(component)).forEach(elm => elm.getAttributeNames().forEach(name => /^on/.test(name) ? (elm.txt = elm.getAttribute(name)) && (elm.removeAttribute(name) || (elm[name] = (event, ctx) => new Function("with(this) {return " + elm.txt + "}").call(Object.assign(elm,{app:app,event:event})))) || (delete elm.txt) : ''))));
+  };
   const setState = async () => {
     (await fireCallbacks('cleanup') || (delete callbacks.cleanup)) && (hooks = {});
     [route, ...app.params] = (useHash && window.location.hash.replace('#', '').replace(/^\//, '') || window.location.pathname.replace(/^\//, '')).replace(base.name, '').split(/\//g);
@@ -37,3 +37,4 @@ const Minifrdg = (rootSelector) => {
   const app = {base,useHash,templates,controllers,callbacks,components,$,$$,fill,on,fireCallbacks,setState,goto,refresh,loadLocalTemplates,start: () => setState(),fns:{},vars:{},fillEach:(template,data) => data.map()};
   return app;
 }
+(typeof(module)!=='undefined') && (module.exports = Minifrdg) || (window.Minifrdg = Minifrdg);

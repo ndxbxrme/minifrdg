@@ -12,7 +12,7 @@ const Minifrdg = (rootSelector) => {
   const fill = (template, ctrl) => {const result = template.replace(/\{\{(.+?)\}\}/g, (all, str) => {const r = (new Function("try{with(this) {return " + (/&.+?;/.test(str) && (text.innerHTML = str) && text.innerText || str) + "}}catch(e){return ''}")).call(typeof(ctrl)==='object' && Object.assign(ctrl,{app:app})||ctrl); return ['undefined','null'].includes(typeof(r))?'':r}); /<[^>]*\s(href=|on)[^>]+>/.test(result) && hookActions(result); return result};
   const on = (eventName, cb) => (callbacks[eventName] = callbacks[eventName] || []).push(cb);
   const fireCallbacks = async (eventName, data) => (await (callbacks[eventName] || []).reduce(((p,fn) => p.then((res) => fn(res,app))), Promise.resolve(data)));
-  const inflate = (name, data) => fill(template = templates[name] || '', (hooks[app.route] = data || controllers[name] && controllers[name](app) || {}));
+  const inflate = (name, data) => fill(template = templates[name] || '', (hooks[name] = data || controllers[name] && controllers[name](app) || {}));
   const hookActions = (result) => setTimeout(() => {
     $$('a').forEach(anchor => anchor.href && !anchor.onclick && !anchor.target && (anchor.onclick = () => {app.goto(anchor.href.replace(document.location.origin,''));return false}));
     [rootSelector || 'app', ...rootComponents].forEach(component => ($(component) && $$('*', $(component)).forEach(elm => elm.getAttributeNames().forEach(name => /^on/.test(name) ? (elm.txt = elm.getAttribute(name)) && (elm.removeAttribute(name) || (elm[name] = (event, ctx) => new Function("with(this) {return " + elm.txt + "}").call(Object.assign(elm,{app:app,event:event})))) || (delete elm.txt) : ''))));

@@ -5,18 +5,20 @@ const Minifrdg = (rootSelector) => {
   const controllers = {};
   const callbacks = {};
   let hooks = {};
-  const components = [];
+  const rootComponents = [];
   const text = document.createElement('div');
   const $ = (selector, elem) => (elem || document).querySelector(selector);
   const $$ = (selector, elem) => Array.from((elem || document).querySelectorAll(selector));
-  const fill = (template, ctrl) => {return template.replace(/\{\{(.+?)\}\}/g, (all, str) => {const r = (new Function("try{with(this) {return " + (/&.+?;/.test(str) && (text.innerHTML = str) && text.innerText || str) + "}}catch(e){return ''}")).call(typeof(ctrl)==='object'&&Object.assign(ctrl,{app:app})||ctrl);return ['undefined','null'].includes(typeof(r))?'':r})};
+  const fill = (template, ctrl) => {const result = template.replace(/\{\{(.+?)\}\}/g, (all, str) => {const r = (new Function("try{with(this) {return " + (/&.+?;/.test(str) && (text.innerHTML = str) && text.innerText || str) + "}}catch(e){return ''}")).call(typeof(ctrl)==='object'&&Object.assign(ctrl,{app:app})||ctrl);return ['undefined','null'].includes(typeof(r))?'':r});/\son|\shref=/.test(result) && hookActions(result);return result};
   const on = (eventName, cb) => (callbacks[eventName] = callbacks[eventName] || []).push(cb);
   const fireCallbacks = async (eventName, data) => (await (callbacks[eventName] || []).reduce(((p,fn) => p.then((res) => fn(res,app))), Promise.resolve(data)));
   const inflate = (name, data) => fill(template = templates[name] || '', (hooks[app.route] = data || controllers[name] && controllers[name](app) || {}));
+  const hookActions = (result) => setTimeout(() => {
+    $$('a').forEach(anchor => anchor.href && !anchor.onclick && !anchor.target && (anchor.onclick = () => {app.goto(anchor.href.replace(document.location.origin,''));return false}));
+    [rootSelector || 'app', ...rootComponents].forEach(component => ($(component) && $$('*', $(component)).forEach(elm => elm.getAttributeNames().forEach(name => /^on/.test(name) ? (elm.txt = elm.getAttribute(name)) && (elm.removeAttribute(name) || (elm[name] = (event, ctx) => new Function("with(this) {return " + elm.txt + "}").call(Object.assign(elm,{app:app,event:event})))) || (delete elm.txt) : ''))));
+  });
   const refresh = () => {
-    [rootSelector || 'app', ...components].forEach(component => ($(component) || {}).innerHTML = inflate(component===(rootSelector || 'app') && app.route || component, hooks[app.route]));
-    $$('a').forEach(anchor => anchor.href && !anchor.target && (anchor.onclick = () => {app.goto(anchor.href.replace(document.location.origin,''));return false}));
-    [rootSelector || 'app', ...components].forEach(component => ($(component) && $$('*', $(component)).forEach(elm => elm.getAttributeNames().forEach(name => /^on/.test(name) ? (elm.txt = elm.getAttribute(name)) && (elm.removeAttribute(name) || (elm[name] = (event, ctx) => new Function("with(this) {return " + elm.txt + "}").call(Object.assign(elm,{app:app,event:event})))) || (delete elm.txt) : ''))));
+    [rootSelector || 'app', ...rootComponents].forEach(component => ($(component) || {}).innerHTML = inflate(component===(rootSelector || 'app') && app.route || component, hooks[app.route]));
   };
   const setState = async () => {
     (await fireCallbacks('cleanup') || (delete callbacks.cleanup)) && (hooks = {});
@@ -34,7 +36,7 @@ const Minifrdg = (rootSelector) => {
     setState();
   };
   const loadLocalTemplates = () => $$('script[type="text/template"]').reduce((res, template) => (res[template.id] = template.innerText) && res, app.templates);
-  const app = {base,useHash,templates,controllers,callbacks,components,$,$$,fill,on,fireCallbacks,setState,goto,refresh,loadLocalTemplates,start: () => setState(),fns:{},vars:{},fillEach:(template,data) => data.map()};
+  const app = {base,useHash,templates,controllers,callbacks,rootComponents,$,$$,fill,on,fireCallbacks,setState,goto,refresh,loadLocalTemplates,start: () => setState(),fns:{},vars:{},fillEach:(template,data) => data.map()};
   return app;
 }
 (typeof(module)!=='undefined') && (module.exports = Minifrdg) || (window.Minifrdg = Minifrdg);

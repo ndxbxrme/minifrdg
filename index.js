@@ -9,7 +9,7 @@ const Minifrdg = (rootSelector) => {
   const text = document.createElement('div');
   const $ = (selector, elem) => (elem || document).querySelector(selector);
   const $$ = (selector, elem) => Array.from((elem || document).querySelectorAll(selector));
-  const fill = (template, ctrl) => {const result = template.replace(/\{\{(.+?)\}\}/g, (all, str) => {const r = (new Function("try{with(this) {return " + (/&.+?;/.test(str) && (text.innerHTML = str) && text.innerText || str) + "}}catch(e){return ''}")).call(typeof(ctrl)==='object'&&Object.assign(ctrl,{app:app})||ctrl);return ['undefined','null'].includes(typeof(r))?'':r});/\son|\shref=/.test(result) && hookActions(result);return result};
+  const fill = (template, ctrl) => {const result = template.replace(/\{\{(.+?)\}\}/g, (all, str) => {const r = (new Function("try{with(this) {return " + (/&.+?;/.test(str) && (text.innerHTML = str) && text.innerText || str) + "}}catch(e){return ''}")).call(typeof(ctrl)==='object' && Object.assign(ctrl,{app:app})||ctrl); return ['undefined','null'].includes(typeof(r))?'':r}); /<[^>]*\s(href=|on)[^>]+>/.test(result) && hookActions(result); return result};
   const on = (eventName, cb) => (callbacks[eventName] = callbacks[eventName] || []).push(cb);
   const fireCallbacks = async (eventName, data) => (await (callbacks[eventName] || []).reduce(((p,fn) => p.then((res) => fn(res,app))), Promise.resolve(data)));
   const inflate = (name, data) => fill(template = templates[name] || '', (hooks[app.route] = data || controllers[name] && controllers[name](app) || {}));

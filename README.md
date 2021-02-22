@@ -1,17 +1,24 @@
 # Minifrdg 
 ### The smallin'est, ballin'est SPA framework in town
-Weighing in at only 42 lines of javascript with no dependencies, Minifrdg is a minimalist frontend framework that provides simple routing, templating and a flexible pattern for hooking to the view without exposing anything to the DOM.  
+Weighing in at only 42 lines of javascript with no dependencies, Minifrdg is a minimalist frontend framework that provides simple routing, templating and a flexible pattern for hooking code/data to the view without exposing anything to the DOM.  
 
-Minifrdg isn't a replacement for the more monolithic frameworks but it supplies enough tools to handle a lot of situations.
+Minifrdg isn't a replacement for the more monolithic frameworks but it supplies enough tools to handle a lot of situations.  
+
+There isn't much to learn, no background shenanigans to eat CPU cyles and no need for any crazy transcomplimication.  
+
+Minifrdg could be your best friend...
 
 ### Routing
 We take an extremely simplistic approach to routing.  The first subdomain becomes ```app.route``` and the rest are assigned to ```app.params[]```.  If a template key matches ```app.route``` then that template is filled in and displayed.  A controller with the matching key will also be instantiated if it exists.
 
 All routes that don't have a matching template resolve to ```dashboard```.  
 
-Templates whoes keys are prefixed with an underscore won't be loaded as a top level template.
+Templates whose keys are prefixed with an underscore will not be loaded as a top level template.
 
 Before a route change occurs all ```routeChange``` callbacks are called.  Returning a promise and rejecting it will cancel the navigation.
+
+If the ```routeChange``` callback is successful all ```cleanup``` callbacks are called which gives you a chance to cancel any timers and unhook any functions that require it.  
+
 
 ### Templating
 Double brackets are used to inject data into the template.  Any javascript is valid.  It is run in the scope of any connected controller and has access to the current app through ```app```.

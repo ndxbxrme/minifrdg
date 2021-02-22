@@ -5,7 +5,7 @@ Weighing in at only 42 lines of javascript with no dependencies, Minifrdg is a m
 Minifrdg isn't a replacement for the more monolithic frameworks but it supplies enough tools to handle a lot of situations.
 
 ### Routing
-Minifrdg takes an extremely simplistic approach to routing.  The first subdomain becomes ```app.route``` and the rest are assigned to ```app.params[]```.  If a template key matches ```app.route``` then that template is filled in and displayed.  A controller with the matching key will also be instantiated if it exists.
+We take an extremely simplistic approach to routing.  The first subdomain becomes ```app.route``` and the rest are assigned to ```app.params[]```.  If a template key matches ```app.route``` then that template is filled in and displayed.  A controller with the matching key will also be instantiated if it exists.
 
 All routes that don't have a matching template resolve to ```dashboard```.  
 
@@ -90,13 +90,13 @@ A place to store your variables
 Call this to start the whole shebang.  Load your controllers and templates first.
 #### ```app.refresh()```
 Refreshes the whole app without remaking any of the root controllers.  Call this if you don't have much going on.  Otherwise make a more regional refresh function.
-#### ```app.fill()```
-Fills a template with data.
-#### ```app.goto()```
+#### ```app.fill(template, data)```
+Fills a template with data.  This runs any javascript code so it is recommended that you ```escape()``` any user-submitted content.
+#### ```app.goto(route)```
 Navigate to route.
 #### ```app.loadLocalTemplates()```
 Loads any templates stored in the document in ```<script type="text/template" id="templateName"></script>``` blocks
-#### ```app.on()```
+#### ```app.on(name, (app) => {})```
 Registers a callback
 #### ```app.fireCallbacks(name, [data])```
 Fires all callbacks in order.  Returning a rejected promise cancels the rest of the chain.

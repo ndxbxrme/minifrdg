@@ -21,10 +21,10 @@ const Minifrdg = (rootSelector) => {
     [rootSelector || 'app', ...rootComponents].forEach(component => ($(component) || {}).innerHTML = inflate(component===(rootSelector || 'app') && app.route || component, hooks[app.route]));
   };
   const setState = async () => {
-    (await fireCallbacks('cleanup') || (delete callbacks.cleanup)) && (hooks = {});
     [route, ...app.params] = (useHash && window.location.hash.replace('#', '').replace(/^\//, '') || window.location.pathname.replace(/^\//, '')).replace(base.name, '').split(/\//g);
     app.route = templates[route] && !/^_/.test(route) && route || 'dashboard';
     try {await fireCallbacks('routeChange')} catch(e) {return}
+    (await fireCallbacks('cleanup') || (delete callbacks.cleanup)) && (hooks = {});
     refresh();
   };
   const goto = (route) => {
@@ -36,7 +36,7 @@ const Minifrdg = (rootSelector) => {
     setState();
   };
   const loadLocalTemplates = () => $$('script[type="text/template"]').reduce((res, template) => (res[template.id] = template.innerText) && res, app.templates);
-  const app = {base,useHash,templates,controllers,callbacks,rootComponents,$,$$,fill,on,fireCallbacks,setState,goto,refresh,loadLocalTemplates,start: () => setState(),fns:{},vars:{},fillEach:(template,data) => data.map()};
+  const app = {base,templates,controllers,hooks,callbacks,rootComponents,$,$$,fill,on,fireCallbacks,goto,refresh,loadLocalTemplates,start: () => setState(),fns:{},vars:{},mfid: (base) => parseInt(new Date().getTime().toString().split('').reverse().join('').toString() + Math.floor(Math.random() * 999999).toString()).toString(base || 36)};
   return app;
 }
 (typeof(module)!=='undefined') && (module.exports = Minifrdg) || (window.Minifrdg = Minifrdg);

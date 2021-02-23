@@ -64,9 +64,13 @@ const app = Minifrdg();
 app.start();
 ```
 
-## Tutorial
-### 1 - Simple routing
-Coming soon...
+## Examples
+
+[Simple Routing](https://codepen.io/ndxbxrme/pen/QWGqEON)  
+[Simple Routing with data fetch and refresh](https://codepen.io/ndxbxrme/pen/bGBowKY)  
+[A more complete website](https://codepen.io/ndxbxrme/pen/dyOzpzG)  
+[Podcast player](https://codepen.io/ndxbxrme/pen/ExNwodz)  
+
 
 # API
 

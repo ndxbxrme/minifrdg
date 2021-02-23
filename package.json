@@ -1,7 +1,7 @@
 {
   "name": "minifrdg",
   "version": "0.2.5",
-  "description": "",
+  "description": "The smallin'est, ballin'est SPA framework in town",
   "main": "index.js",
   "scripts": {
     "deploy": "cp index.js minifrdg.js && aws s3 cp minifrdg.js s3://www.rainstormweb.com/ && rm -rf minifrdg.js"

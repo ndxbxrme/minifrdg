@@ -1,6 +1,6 @@
 # Minifrdg 
 ### The smallin'est, ballin'est SPA framework in town
-Weighing in at only 41 lines of javascript with no dependencies, Minifrdg is a minimalist frontend framework that provides simple routing, templating and a flexible pattern for hooking code/data to the view without exposing anything to the DOM.  
+Weighing in at only 42 lines of javascript with no dependencies, Minifrdg is a minimalist frontend framework that provides simple routing, templating and a flexible pattern for hooking code/data to the view without exposing anything to the DOM.  
 
 Minifrdg isn't a replacement for the more monolithic frameworks but it supplies enough tools to handle a lot of situations.  
 

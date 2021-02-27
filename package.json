@@ -1,6 +1,6 @@
 {
   "name": "minifrdg",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "The smallin'est, ballin'est SPA framework in town",
   "main": "index.js",
   "scripts": {

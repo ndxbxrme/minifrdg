@@ -102,7 +102,9 @@ Call this to start the whole shebang.  Load your controllers and templates first
 #### ```app.refresh()```
 Refreshes the whole app without remaking any of the root controllers.  Call this if you don't have much going on.  Otherwise make a more regional refresh function.
 #### ```app.fill(template, data)```
-Fills a template with data.  This runs any javascript code so it is recommended that you ```escape()``` any user-submitted content.
+Fills a template with data.  
+#### ```app.safe(text)```
+HTML encodes potentially dangerous entities.
 #### ```app.goto(route)```
 Navigate to route.
 #### ```app.loadLocalTemplates()```

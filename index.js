@@ -18,7 +18,7 @@ const Minifrdg = (rootSelector) => {
     $$('a').forEach(anchor => anchor.href && !anchor.onclick && !anchor.target && (anchor.onclick = () => {app.goto(anchor.href.replace(document.location.origin,''));return false}));
     [rootSelector || 'app', ...rootComponents].forEach(component => ($(component) && $$('*', $(component)).forEach(elm => elm.getAttributeNames().forEach(name => /^on/.test(name) ? (elm.txt = elm.getAttribute(name)) && (elm.removeAttribute(name) || (elm[name] = (event, ctx) => new Function("with(this) {return " + elm.txt + "}").call(Object.assign(elm,{app:app,event:event})))) || (delete elm.txt) : ''))));
   });
-  const refresh = (targets) => [rootSelector || 'app', ...rootComponents].filter(component => !targets || targets.includes(component)).forEach(component => ($(component) || {}).innerHTML = inflate(component===(rootSelector || 'app') && app.route || component, hooks[app.route]));
+  const refresh = (targets) => {const t = targets || base.targets; return [rootSelector || 'app', ...rootComponents].filter(component => !t || t.includes(component)).forEach(component => ($(component) || {}).innerHTML = inflate(component===(rootSelector || 'app') && app.route || component, hooks[app.route]))};
   const setState = async (targets) => {
     [route, ...app.params] = (useHash && window.location.hash.replace('#', '').replace(/^\//, '') || window.location.pathname.replace(/^\//, '')).replace(base.name, '').split(/\//g);
     app.route = templates[route] && !/^_/.test(route) && route || 'dashboard';
@@ -33,7 +33,7 @@ const Minifrdg = (rootSelector) => {
       route = document.location.origin + '/' + route.replace(/^\//, '');
       route !== document.location.pathname && window.history.pushState(route, null, route);
     }
-    setState(targets || base.targets);
+    setState(targets);
   };
   const loadLocalTemplates = () => $$('script[type="text/template"]').reduce((res, template) => (res[template.id] = template.innerText) && res, app.templates);
   const app = {base,templates,controllers,hooks,callbacks,rootComponents,$,$$,safe,fill,on,fireCallbacks,goto,refresh,loadLocalTemplates,start: () => setState(),fns:{},vars:{},mfid: (base) => parseInt(new Date().getTime().toString().split('').reverse().join('').toString() + Math.floor(Math.random() * 999999).toString()).toString(base || 36)};

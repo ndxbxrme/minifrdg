@@ -19,12 +19,12 @@ const Minifrdg = (rootSelector) => {
     [rootSelector || 'app', ...rootComponents].forEach(component => ($(component) && $$('*', $(component)).forEach(elm => elm.getAttributeNames().forEach(name => /^on/.test(name) ? (elm.txt = elm.getAttribute(name)) && (elm.removeAttribute(name) || (elm[name] = (event, ctx) => new Function("with(this) {return " + elm.txt + "}").call(Object.assign(elm,{app:app,event:event})))) || (delete elm.txt) : ''))));
   });
   const refresh = (targets) => {const t = targets || base.targets; [rootSelector || 'app', ...rootComponents].filter(component => !t || (t.includes(component))).forEach(component => ($(component) || {}).innerHTML = inflate(component===(rootSelector || 'app') && app.route || component, hooks[app.route]));fireCallbacks('refreshed');return true;};
-  const setState = async (targets) => {
+  const setState = async () => {
     [route, ...app.params] = (useHash && window.location.hash.replace('#', '').replace(/^\//, '') || window.location.pathname.replace(/^\//, '')).replace(base.name, '').split(/\//g);
     app.route = templates[route] && !/^_/.test(route) && route || 'dashboard';
     try {await fireCallbacks('routeChange')} catch(e) {return}
     (await fireCallbacks('cleanup') || (delete callbacks.cleanup)) && (hooks = {});
-    refresh(targets) && fireCallbacks('routeChanged');
+    refresh() && fireCallbacks('routeChanged');
   };
   window.addEventListener('popstate', setState);
   const goto = (route, targets) => {

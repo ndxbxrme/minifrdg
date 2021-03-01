@@ -36,7 +36,7 @@ const Minifrdg = (rootSelector) => {
     setState(targets);
   };
   const loadLocalTemplates = () => $$('script[type="text/template"]').reduce((res, template) => (res[template.id] = template.innerText) && res, app.templates);
-  const app = {base,templates,controllers,hooks,callbacks,rootComponents,$,$$,safe,fill,on,fireCallbacks,goto,refresh,loadLocalTemplates,start: () => setState(),fns:{},vars:{},mfid: (base) => parseInt(new Date().getTime().toString().split('').reverse().join('').toString() + Math.floor(Math.random() * 999999).toString()).toString(base || 36)};
+  const app = {base,templates,controllers,hooks,callbacks,rootComponents,$,$$,safe,fill,on,fireCallbacks,hookActions,goto,refresh,loadLocalTemplates,start: () => setState(),fns:{},vars:{},mfid: (base) => parseInt(new Date().getTime().toString().split('').reverse().join('').toString() + Math.floor(Math.random() * 999999).toString()).toString(base || 36)};
   return app;
 }
 (typeof(module)!=='undefined') && (module.exports = Minifrdg) || (window.Minifrdg = Minifrdg);

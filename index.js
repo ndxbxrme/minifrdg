@@ -10,7 +10,7 @@ const Minifrdg = (rootSelector) => {
   const $ = (selector, elem) => (elem || document).querySelector(selector);
   const $$ = (selector, elem) => Array.from((elem || document).querySelectorAll(selector));
   const safe = (text) => (typeof(text)!=='string') && text || (text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
-  const fill = (template, ctrl) => {const result = template.replace(/\n/g,'/*NL*/').replace(/\{\{(.+?)\}\}/gm, (all, str) => {const r = (new Function("try{with(this) {return " + (/&.+?;/.test(str) && (text.innerHTML = str) && text.innerText || str).replace(/^#/,'') + "}}catch(e){return ''}")).call(typeof(ctrl)==='object' && Object.assign(ctrl,{app:app})||ctrl); return ['undefined','null'].includes(typeof(r))?'':(/app\.fill|^#/.test(all)?r:app.safe(r))}); /<[^>]*\s(href=|on)[^>]+>/.test(result) && hookActions(result); return result.replace(/\/\*NL\*\//g,'\n')};
+  const fill = (template, ctrl) => {const result = template.replace(/\n/g,'/*NL*/').replace(/\{\{(.+?)\}\}/gm, (all, str) => {const r = (new Function("try{with(this) {return " + (/&.+?;/.test(str) && (text.innerHTML = str) && text.innerText || str).replace(/^#/,'') + "}}catch(e){return ''}")).call(typeof(ctrl)==='object' && Object.assign(ctrl,{app:app})||ctrl); return ['undefined','null'].includes(typeof(r))?'':(/app\.fill|^#/.test(str)?r:app.safe(r))}); /<[^>]*\s(href=|on)[^>]+>/.test(result) && hookActions(result); return result.replace(/\/\*NL\*\//g,'\n')};
   const on = (eventName, cb) => (callbacks[eventName] = callbacks[eventName] || []).push(cb);
   const fireCallbacks = async (eventName, data) => (await (callbacks[eventName] || []).reduce(((p,fn) => p.then((res) => fn(res,app))), Promise.resolve(data)));
   const inflate = (name, data) => fill(template = templates[name] || '', (hooks[name] = data || controllers[name] && controllers[name](app) || {}));
@@ -36,7 +36,7 @@ const Minifrdg = (rootSelector) => {
     setState(targets);
   };
   const loadLocalTemplates = () => $$('script[type="text/template"]').reduce((res, template) => (res[template.id] = template.innerText) && res, app.templates);
-  const app = {base,templates,controllers,hooks,callbacks,rootComponents,$,$$,safe,fill,on,fireCallbacks,hookActions,goto,refresh,loadLocalTemplates,start: () => setState(),fns:{},vars:{},mfid: (base) => parseInt(new Date().getTime().toString().split('').reverse().join('').toString() + Math.floor(Math.random() * 999999).toString()).toString(base || 36)};
+  const app = {base,templates,controllers,hooks,callbacks,rootComponents,$,$$,safe,fill,on,fireCallbacks,goto,refresh,loadLocalTemplates,start: () => setState(),fns:{},vars:{},mfid: (base) => parseInt(new Date().getTime().toString().split('').reverse().join('').toString() + Math.floor(Math.random() * 999999).toString()).toString(base || 36)};
   return app;
 }
 (typeof(module)!=='undefined') && (module.exports = Minifrdg) || (window.Minifrdg = Minifrdg);
